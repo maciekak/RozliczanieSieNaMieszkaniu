@@ -29,5 +29,9 @@ namespace RozliczanieSieNaMieszkaniu.Models
         {
             return new ApplicationDbContext();
         }
+
+        public DbSet<EntryModel> Entries { get; set; }
+        public DbSet<SessionModel> Sessions { get; set; }
+        public DbSet<EndSessionModel> EndSessions { get; set; }
     }
 }
