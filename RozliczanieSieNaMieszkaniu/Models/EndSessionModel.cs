@@ -10,6 +10,8 @@ namespace RozliczanieSieNaMieszkaniu.Models
     public class EndSessionModel
     {
         [Key]
+        public int Id { get; set; }
+
         [ForeignKey("Session")]
         public int SessionId { get; set; }
 
@@ -24,6 +26,9 @@ namespace RozliczanieSieNaMieszkaniu.Models
 
         [Required]
         public bool Realized { get; set; }
+
+        [Required]
+        public DateTime Date { get; set; }
 
         public virtual SessionModel Session { get; set; }
     }

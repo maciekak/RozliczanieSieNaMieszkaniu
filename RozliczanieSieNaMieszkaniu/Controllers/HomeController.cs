@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using RozliczanieSieNaMieszkaniu.BusinessLogic;
+using RozliczanieSieNaMieszkaniu.DataAccessLayer;
 using RozliczanieSieNaMieszkaniu.Models;
 
 namespace RozliczanieSieNaMieszkaniu.Controllers
@@ -14,10 +17,6 @@ namespace RozliczanieSieNaMieszkaniu.Controllers
     {
         public ActionResult Index()
         {
-            var db = new ApplicationDbContext();
-            var session = new SessionModel {Id = 1};
-            db.Sessions.Add(session);
-            db.SaveChanges();
             var model = new EntryViewModel {UserName = User.Identity.Name};
             return View(model);
         }
@@ -25,12 +24,14 @@ namespace RozliczanieSieNaMieszkaniu.Controllers
         [HttpPost]
         public ActionResult Add(EntryViewModel model)
         {
+            var sessionService = new SessionService();
+
             //TODO: zeby na stronie sprawdzalo czy podana wartosc to decimal
             var entry = new EntryModel()
             {
                 Price = model.Price,
                 Date = DateTime.Now,
-                SessionId = 1,
+                SessionId = sessionService.GetActualSessionId(System.Web.HttpContext.Current),
                 What = model.What,
                 ApplicationUserId = User.Identity.GetUserId()
             };
@@ -39,6 +40,30 @@ namespace RozliczanieSieNaMieszkaniu.Controllers
             db.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ActionResult Summary()
+        {
+            var sessionService = new SessionService();
+            var actualSession = sessionService.GetActualSession(System.Web.HttpContext.Current);
+            var reckoningService = new ReckoningCostsService();
+            var model = reckoningService.GetFiguredCostsUpList(actualSession);
+            return View(model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult SummaryForAdmin()
+        {
+            //TODO: it possible to take that from model
+            var sessionService = new SessionService();
+            var actualSession = sessionService.GetActualSession(System.Web.HttpContext.Current);
+            var reckoningService = new ReckoningCostsService();
+            var figuredUpList = reckoningService.GetFiguredCostsUpList(actualSession);
+
+            sessionService.SetUpNewSession(System.Web.HttpContext.Current, figuredUpList);
+
+            return RedirectToAction("Summary");
         }
     }
 }

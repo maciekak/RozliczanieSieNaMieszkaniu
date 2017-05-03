@@ -1,0 +1,42 @@
+﻿@model IEnumerable<RozliczanieSieNaMieszkaniu.Models.FiguredCostsUpViewModel>
+
+@{
+    ViewBag.Title = "Summary";
+}
+
+<h2>Summary</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Who)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Whom)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HowMuch)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Who)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Whom)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HowMuch)
+        </td>
+    </tr>
+}
+    
+    @if (ViewContext.HttpContext.User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("Podsumuj sesje", "SummaryForAdmin")
+    }
+
+</table>

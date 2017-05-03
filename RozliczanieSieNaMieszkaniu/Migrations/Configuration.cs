@@ -10,7 +10,6 @@ namespace RozliczanieSieNaMieszkaniu.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
-            ContextKey = "RozliczanieSieNaMieszkaniu.Models.ApplicationDbContext";
         }
 
         protected override void Seed(RozliczanieSieNaMieszkaniu.Models.ApplicationDbContext context)

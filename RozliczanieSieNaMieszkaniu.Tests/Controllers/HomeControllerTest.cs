@@ -29,15 +29,15 @@ namespace RozliczanieSieNaMieszkaniu.Tests.Controllers
         //            // Assert
         //            Assert.IsNotNull(result);
         //        }
-        [TestMethod]
-        public void TestAdd()
-        {
-            HomeController controller = new HomeController();
+//        [TestMethod]
+//        public void TestAdd()
+//        {
+//            HomeController controller = new HomeController();
 
             //ViewResult result = controller.Add(new EntryViewModel()) as ViewResult;
 
             //Assert.IsNotNull(result);
-        }
+//        }
     }
 
 }

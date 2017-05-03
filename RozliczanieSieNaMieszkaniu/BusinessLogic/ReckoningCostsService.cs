@@ -16,7 +16,7 @@ namespace RozliczanieSieNaMieszkaniu.BusinessLogic
 
             foreach (var entry in session.Entries)
             {
-                var userId = entry.ApplicationUserId;
+                var userId = entry.ApplicationUserId; //TODO: temporary ID, should be username
 
                 if (usersSpendings.ContainsKey(userId))
                     usersSpendings[userId] += entry.Price;
@@ -34,7 +34,7 @@ namespace RozliczanieSieNaMieszkaniu.BusinessLogic
             {
                 Who = u.Who,
                 Whom = u.Whom,
-                HowMuch = u.HowMany,
+                HowMuch = u.HowMuch,
                 Realized = false,
                 SessionId = session.Id
             }).ToList();
@@ -46,6 +46,21 @@ namespace RozliczanieSieNaMieszkaniu.BusinessLogic
         {
             //TODO: napisac testy
             var usersSpendings = GetUsersSpendings(session);
+
+            if (usersSpendings.Count == 0)
+                return new List<FiguredCostsUpViewModel>();
+            if (usersSpendings.Count == 1)
+            {
+                return new List<FiguredCostsUpViewModel>()
+                {
+                    new FiguredCostsUpViewModel()
+                    {
+                        Who = usersSpendings.First().Key,
+                        Whom = usersSpendings.First().Key,
+                        HowMuch = usersSpendings.First().Value
+                    }
+                };
+            }
 
             decimal average = usersSpendings.Average(s => s.Value);
 
@@ -69,7 +84,7 @@ namespace RozliczanieSieNaMieszkaniu.BusinessLogic
                     {
                         Who = less.Key,
                         Whom = more.Key,
-                        HowMany = restToAverage
+                        HowMuch = restToAverage
                     });
 
                     lessThanAverage.Remove(less);
@@ -88,7 +103,7 @@ namespace RozliczanieSieNaMieszkaniu.BusinessLogic
                     {
                         Who = less.Key,
                         Whom = more.Key,
-                        HowMany = payBack
+                        HowMuch = payBack
                     });
 
                     moreThanAverage.Remove(more);

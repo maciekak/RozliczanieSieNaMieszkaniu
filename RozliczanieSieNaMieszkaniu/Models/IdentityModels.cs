@@ -16,6 +16,8 @@ namespace RozliczanieSieNaMieszkaniu.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public int ActualSession { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
