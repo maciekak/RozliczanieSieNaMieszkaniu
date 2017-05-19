@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using RozliczanieSieNaMieszkaniu.DataAccessLayer;
 using RozliczanieSieNaMieszkaniu.Models;
 
 namespace RozliczanieSieNaMieszkaniu.Controllers
@@ -75,7 +76,7 @@ namespace RozliczanieSieNaMieszkaniu.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -151,7 +152,13 @@ namespace RozliczanieSieNaMieszkaniu.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var sessionService = new SessionService();
+                var user = new ApplicationUser
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    ActualSession = sessionService.GetSessionIdForNewUser(System.Web.HttpContext.Current)
+                };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

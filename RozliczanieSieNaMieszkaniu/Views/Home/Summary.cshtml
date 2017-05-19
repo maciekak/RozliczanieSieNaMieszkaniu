@@ -20,23 +20,24 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Who)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Whom)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.HowMuch)
-        </td>
-    </tr>
-}
-    
-    @if (ViewContext.HttpContext.User.IsInRole("Admin"))
-    {
-        @Html.ActionLink("Podsumuj sesje", "SummaryForAdmin")
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Who)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Whom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HowMuch)
+            </td>
+        </tr>
     }
-
 </table>
+
+@Html.ActionLink("Wróć", "Index")
+
+@if (ViewContext.HttpContext.User.IsInRole("Admin"))
+{
+    @Html.ActionLink("Podsumuj sesje", "SummaryForAdmin")
+}

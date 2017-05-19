@@ -1,35 +1,41 @@
-﻿@model RozliczanieSieNaMieszkaniu.Models.EntryViewModel
+﻿@using RozliczanieSieNaMieszkaniu.Models
+@model RozliczanieSieNaMieszkaniu.Models.EntriesViewModel
 @{
     ViewBag.Title = "Home Page";
 }
 
-<div>
-    @using (Html.BeginForm("Add", "Home", FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.NewEntry.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NewEntry.What)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NewEntry.Price)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.EntryList)
     {
-        @Html.AntiForgeryToken()
-        <h4>@Model.UserName wprowadz co kupiles</h4>
-        <div class="form-group">
-            @Html.LabelFor(m => m.What, new { @class = "col-md-2 control-label"})
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.What, new { @class = "form-control"})
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(m => m.Price, new { @class = "col-md-2 control-label"})
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.Price, new { @class = "form-control"})
-                @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" class="btn btn-default" value="Wyślij"/>
-            </div>
-        </div>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.What)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+        </tr>
     }
-</div>
+</table>
+
+
+@Html.Partial("_AddPartial", Model.NewEntry)
 <div>
     @Html.ActionLink("Zobacz kto aktualnie komu ile musi oddać", "Summary");
 </div>

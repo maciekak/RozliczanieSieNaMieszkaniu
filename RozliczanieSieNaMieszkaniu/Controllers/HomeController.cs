@@ -17,7 +17,16 @@ namespace RozliczanieSieNaMieszkaniu.Controllers
     {
         public ActionResult Index()
         {
-            var model = new EntryViewModel {UserName = User.Identity.Name};
+            var sessionService = new SessionService();
+            //TODO: zeby jeszcze pobieralo z aktualnej sesji
+            var model = new EntriesViewModel()
+            {
+                EntryList = sessionService.GetActualSessionEntries(System.Web.HttpContext.Current),
+                NewEntry = new EntryViewModel()
+                {
+                    UserName = User.Identity.GetUserId()
+                }
+            };
             return View(model);
         }
 

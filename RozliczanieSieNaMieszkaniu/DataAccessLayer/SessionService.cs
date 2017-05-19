@@ -20,7 +20,6 @@ namespace RozliczanieSieNaMieszkaniu.DataAccessLayer
         public int GetActualSessionId(HttpContext context)
         {
             var manager = context.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            
             return manager.FindById(context.User.Identity.GetUserId()).ActualSession;
         }
 
@@ -36,6 +35,7 @@ namespace RozliczanieSieNaMieszkaniu.DataAccessLayer
 
         public void SetUpNewSession(HttpContext context, List<FiguredCostsUpViewModel> figuredCostsList)
         {
+            
             if (!context.User.IsInRole("Admin"))
                 throw new Exception("Access only for Admin");
 
@@ -72,6 +72,42 @@ namespace RozliczanieSieNaMieszkaniu.DataAccessLayer
             admin.ActualSession = newSessionId;
             users.ForEach(u => u.ActualSession = newSessionId);
             _applicationDb.SaveChanges();
+        }
+
+        public List<EntryViewModel> GetUsersEntries(string userId)
+        {
+            return _applicationDb.Entries.Where(e => e.ApplicationUserId == userId).Select(e => new EntryViewModel()
+            {
+                UserName = e.ApplicationUserId,
+                What = e.What,
+                Price = e.Price
+            }).ToList();
+        }
+
+        public List<EntryViewModel> GetActualSessionEntries(HttpContext context)
+        {
+            var session = GetActualSession(context);
+            return session.Entries.Select(e => new EntryViewModel()
+            {
+                Price = e.Price,
+                What = e.What,
+                UserName = e.ApplicationUserId
+            }).ToList();
+        }
+
+        public int GetSessionIdForNewUser(HttpContext context)
+        {
+            var manager = context.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var usersList = manager.Users.ToList();
+            
+            foreach (var user in usersList)
+            {
+                if(manager.IsInRole(user.Id, "Admin"))
+                    return user.ActualSession;
+            }
+
+            throw new Exception("Admin not found");
+
         }
     }
 }
